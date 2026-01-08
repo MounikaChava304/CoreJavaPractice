@@ -13,6 +13,7 @@ public class Stock {
 
     /**
      * Constructor that forces creating a stock with preset parameters
+     *
      * @param tickerSymbol
      * @param tickerName
      * @param sectorID
@@ -81,5 +82,14 @@ public class Stock {
 
     public void setCurrentRatio(double currentRatio) {
         this.currentRatio = currentRatio;
+    }
+
+    public void printStockDetails() {
+        System.out.println("Ticker Symbol : " + tickerSymbol);
+        System.out.println("Ticker Name : " + tickerName);
+        System.out.println("SectorID : " + sectorID);
+        System.out.println("Sub Sector ID : " + subSectorID);
+        System.out.println("Market Cap : " + marketCap);
+        System.out.println("Current Ratio : " + currentRatio);
     }
 }
