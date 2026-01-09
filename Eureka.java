@@ -54,11 +54,13 @@ public class Eureka {
     private static void playingWithObjects() {
         //Instantiated reference  variable called appleStock of the type Stock.
         //Assigning appleStock reference variable to a new instance of the stock class.
-        Stock appleStock = new Stock("AAPL", "Apple Inc", 34, 176); //Default constructor was called
 //        appleStock.setTickerSymbol("AAPL");
 //        appleStock.setTickerName("Apple Inc");
 //        appleStock.setSectorID(34);
 //        appleStock.setSubSectorID(176);
+        Stock.someJunkMethod("Value");
+        System.out.println("Before creating a new object on Stock class");
+        Stock appleStock = new Stock("AAPL", "Apple Inc", 34, 176); //Default constructor was called
         BigInteger appleMarketCap = new BigInteger("34000000000000");
         appleStock.setMarketCap(appleMarketCap);
         appleStock.setCurrentRatio(3.83);
@@ -68,7 +70,9 @@ public class Eureka {
         googleStock.setMarketCap(new BigInteger("2500000000000"));
         googleStock.setCurrentRatio(1.97);
         System.out.println("Google Stock Values are : " + googleStock.getTickerSymbol() + " , ");
-        //appleStock = googleStock;
+
+        System.out.println("Output from someJunk static method is " + Stock.someJunkMethod("Hello"));
+
         double googleCurrentRatio = googleStock.getCurrentRatio();
         testPassByValueReference(googleStock, googleStock.getCurrentRatio());
         System.out.println("Value of Google Current Ratio is " + googleCurrentRatio);
@@ -77,6 +81,7 @@ public class Eureka {
 
     /**
      * Method that is used to demonstrate pass by reference and pass by value and the manifestation of changes in values
+     *
      * @param stock        Pass by Reference, that changes the underlying object
      * @param currentRatio Pass by Value, that generates another local variable with the same primitive value
      */

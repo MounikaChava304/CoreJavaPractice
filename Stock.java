@@ -6,13 +6,24 @@ import java.math.BigInteger;
  * access is restricted via getter and setter methods
  */
 public class Stock {
+     /**
+     * code in the static block runs only once , the first time class is engaged either by calling a static method on it or by creating objects out of its
+     */
+    static {
+        System.out.println("Inside the static block in the stock class");
+    }
 
+    private String tickerSymbol;
+    private String tickerName;
+    private BigInteger marketCap;
+    private int sectorID;
+    private int subSectorID;
+    private double currentRatio;
     //Default Constructor
     private Stock() {
     }
-
     /**
-     * Constructor that forces creating a stock with preset parameters
+     * Parameterized Constructor that forces creating a stock with preset parameters
      *
      * @param tickerSymbol
      * @param tickerName
@@ -27,12 +38,19 @@ public class Stock {
         this.subSectorID = subSectorID;
     }
 
-    private String tickerSymbol;
-    private String tickerName;
-    private BigInteger marketCap;
-    private int sectorID;
-    private int subSectorID;
-    private double currentRatio;
+    //Static variables are generally used to define constants
+    //final values are not to be changed
+    private static final String junkVar = "Whatever";
+    /**
+     * Some documentation for this junk static method
+     *
+     * @param someInput
+     * @return
+     */
+    //Static methods are used to implement functionality purely based on inputs or to provide utility functionality
+    public static String someJunkMethod(String someInput) {
+        return junkVar + someInput;
+    }
 
     //Getter and Setter Methods
 
@@ -57,6 +75,7 @@ public class Stock {
     }
 
     public void setMarketCap(BigInteger marketCap) {
+        System.out.println(someJunkMethod(junkVar)); //Static variable/method can be used in Instance Method
         this.marketCap = marketCap;//this.marketCap is an instance variable of class, marketCap is a method parameter
     }
 
@@ -84,6 +103,9 @@ public class Stock {
         this.currentRatio = currentRatio;
     }
 
+    /**
+     * This Method prints all the details of the stock.
+     */
     public void printStockDetails() {
         System.out.println("Ticker Symbol : " + tickerSymbol);
         System.out.println("Ticker Name : " + tickerName);
