@@ -23,6 +23,15 @@ public class CheckingAccount extends Account {
         return getAccountBalance();
     }
 
+    @Override
+    public String toString() {
+        return "CheckingAccount{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", accountBalance=" + accountBalance + '\'' +
+                ", cashBackRate =" + cashBackRate +
+                '}';
+    }
+
     /***
      * This is a method that child class is forced to implement as
      * it was declared as abstract method in parent class

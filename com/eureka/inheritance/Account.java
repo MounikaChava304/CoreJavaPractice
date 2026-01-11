@@ -1,6 +1,7 @@
 package com.eureka.inheritance;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public abstract class Account {//Abstract classes cannot have objects created from them
     protected String accountNumber;
@@ -12,6 +13,32 @@ public abstract class Account {//Abstract classes cannot have objects created fr
     public Account(String accountNumber, BigDecimal accountBalance) {
         this.accountNumber = accountNumber;
         this.accountBalance = accountBalance;
+    }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (!(o instanceof Account account)) return false;
+//        return Objects.equals(accountNumber, account.accountNumber);
+//    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(accountNumber, account.accountNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(accountNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", accountBalance=" + accountBalance +
+                '}';
     }
 
     public String getAccountNumber() {

@@ -17,6 +17,13 @@ public class Square implements Shape{
         return side;
     }
 
+    @Override
+    public String toString() {
+        return "Square{" +
+                "side=" + side +
+                '}';
+    }
+
     /***
      * This class is forced to override and implement this method as it is implementing the interface Shape
      * This method calculates the area of a square

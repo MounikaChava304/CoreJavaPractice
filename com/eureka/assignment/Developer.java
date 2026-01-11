@@ -15,6 +15,6 @@ public class Developer extends Employee {
      * @return yearly bonus of that employee
      */    @Override
     public BigDecimal calculateYearlyBonus() {
-        return (getSalary().multiply(new BigDecimal("0.10")));
+        return (getSalary().multiply(new BigDecimal("0.10")).multiply(new BigDecimal("12")));
     }
 }

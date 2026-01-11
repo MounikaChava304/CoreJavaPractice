@@ -77,6 +77,7 @@ public class Eureka {
         testPassByValueReference(googleStock, googleStock.getCurrentRatio());
         System.out.println("Value of Google Current Ratio is " + googleCurrentRatio);
         System.out.println("Google Stock Values are : " + googleStock.getTickerSymbol() + " , " + googleStock.getCurrentRatio());
+        System.out.println("Google Stock is "+googleStock);
     }
 
     /**

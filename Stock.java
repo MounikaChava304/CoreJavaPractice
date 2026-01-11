@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.Objects;
 
 /**
  * Class that represents real world stock being traded in the US Stock Exchanges
@@ -6,7 +7,11 @@ import java.math.BigInteger;
  * access is restricted via getter and setter methods
  */
 public class Stock {
-     /**
+    //Static variables are generally used to define constants
+    //final values are not to be changed
+    private static final String junkVar = "Whatever";
+
+    /**
      * code in the static block runs only once , the first time class is engaged either by calling a static method on it or by creating objects out of its
      */
     static {
@@ -19,9 +24,11 @@ public class Stock {
     private int sectorID;
     private int subSectorID;
     private double currentRatio;
+
     //Default Constructor
     private Stock() {
     }
+
     /**
      * Parameterized Constructor that forces creating a stock with preset parameters
      *
@@ -38,9 +45,6 @@ public class Stock {
         this.subSectorID = subSectorID;
     }
 
-    //Static variables are generally used to define constants
-    //final values are not to be changed
-    private static final String junkVar = "Whatever";
     /**
      * Some documentation for this junk static method
      *
@@ -86,6 +90,47 @@ public class Stock {
 //    public void setSectorID(int sectorID) {
 //        this.sectorID = sectorID;
 //    }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "tickerSymbol='" + tickerSymbol + '\'' +
+                ", tickerName='" + tickerName + '\'' +
+                ", marketCap=" + marketCap +
+                ", currentRatio=" + currentRatio +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        return Objects.equals(tickerSymbol, stock.tickerSymbol) && Objects.equals(tickerName, stock.tickerName);
+    }
+
+//    /***
+//     * Our own implementation of the equals method
+//     * @param outsideObject   the reference object with which to compare.
+//     * @return
+//     */
+
+//    @Override
+//    public boolean equals(Object outsideObject) {
+//        boolean isEquals = false;
+//        if (outsideObject != null && (outsideObject instanceof Stock)) { //Making sure outside object is not null and of type stock
+//            Stock outsideStockObj = (Stock) outsideObject; //typecasting from generic object to Stock
+//            if (this.tickerSymbol.equals(outsideStockObj.getTickerSymbol())
+//                    && this.tickerName.equals(outsideStockObj.getTickerName())) { //Checking if tickerSymbol and tickerName values in both objects are equal
+//                isEquals = true;
+//            }
+//        }
+//        return isEquals;
+//    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tickerSymbol, tickerName);
+    }
 
     public int getSubSectorID() {
         return subSectorID;

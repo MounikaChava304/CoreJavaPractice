@@ -26,6 +26,9 @@ public class AccountsPlayground {
         checkingAccount2.withDraw(new BigDecimal("15"));
         System.out.println("Balance in checking account " + checkingAccount2.getAccountNumber() + " is " + checkingAccount2.getAccountBalance());
 
+        System.out.println("Checking Account 2 is " + checkingAccount2); //This works because of toString() in CheckingAccount class
+        System.out.println("Savings Account 2 is " + savingsAccount2); //This works because of toString() in Account class as toString() method is not overridden in SavingsAccount class.
+
         savingsAccount2.deposit(new BigDecimal("15"));
         savingsAccount2.withDraw(new BigDecimal("15"));
         System.out.println("Balance in savings account " + savingsAccount2.getAccountNumber() + " is " + savingsAccount2.getAccountBalance());
@@ -42,11 +45,18 @@ public class AccountsPlayground {
         savingsAccount1.printAccountDetails();
         savingsAccount2.printAccountDetails();
 
+        CheckingAccount checkingAccount3 = new CheckingAccount("CHK3", new BigDecimal("1"));
+        Account savingsAccount3 = new SavingsAccount("CHK3", new BigDecimal("5"));
+        if (checkingAccount3.equals(savingsAccount3)) {
+            System.out.println("Both Accounts are same");
+        } else {
+            System.out.println("Both Accounts are not same");
+        }
+
         //This only works because of Java's Polymorphism
         Account[] accountsArray = new Account[]{checkingAccount1, checkingAccount2, savingsAccount1, savingsAccount2};
         calculateTotalBankDepositBalance(accountsArray);
     }
-
     /***
      * Method that takes an Account Array and calculates the sum of all bank balances
      * @param accountsArray that contains all Checking and Savings Accounts in the Bank - Polymorphism in action

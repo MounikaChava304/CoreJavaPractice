@@ -6,12 +6,15 @@ import java.math.MathContext;
 public class PlayingWithShapes {
     public static void main(String[] args) {
         Square square1 = new Square(new BigDecimal("5.0"));
+        System.out.println("Square 1 is : "+square1);
         Rectangle rectangle1 = new Rectangle(new BigDecimal("10.0"), new BigDecimal("8.0"));
 
         //Another flavor of polymorphism
         //Reference variable of interface type can point at any object of a class implementing an interface
         Shape rectangle2 = new Rectangle(new BigDecimal("5.0"), new BigDecimal("6.0"));
+        System.out.println("Rectangle 2 is "+rectangle2);
         Shape circle1 = new Circle(new BigDecimal("6.0"));
+        System.out.println("Circle 1 is "+circle1);
 
         //This is possible due to Interface Polymorphism
         Shape[] shapeArray = new Shape[]{square1, rectangle1, rectangle2, circle1};

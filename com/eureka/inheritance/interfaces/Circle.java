@@ -5,6 +5,13 @@ import java.math.BigDecimal;
 public class Circle implements Shape{
     private BigDecimal radius;
 
+    @Override
+    public String toString() {
+        return "Circle{" +
+                "radius=" + radius +
+                '}';
+    }
+
     private Circle() {
     }
 

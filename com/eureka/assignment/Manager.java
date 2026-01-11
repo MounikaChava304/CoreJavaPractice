@@ -42,6 +42,6 @@ public class Manager extends Employee {
      */
     @Override
     public BigDecimal calculateYearlyBonus() {
-        return (getSalary().multiply(new BigDecimal("0.20")));
+        return (getSalary().multiply(new BigDecimal("0.20")).multiply(new BigDecimal("12")));
     }
 }

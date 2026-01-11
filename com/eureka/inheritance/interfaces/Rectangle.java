@@ -6,6 +6,14 @@ public class Rectangle implements Shape {
     private BigDecimal length;
     private BigDecimal width;
 
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "length=" + length +
+                ", width=" + width +
+                '}';
+    }
+
     private Rectangle() {
     }
 

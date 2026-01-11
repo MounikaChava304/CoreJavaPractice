@@ -20,9 +20,10 @@ public class AssignmentDay03 {
      */
     public static void checkPalindrome(String inputString) {
         String reverseString = "";
+        //for r loop to take the last letter of the string first to create a reverse string
         for (int index = inputString.length() - 1; index >= 0; index--) {
             reverseString += inputString.charAt(index);
-            System.out.println(reverseString);
+            //System.out.println(reverseString);
         }
         if (inputString.equals(reverseString)) {
             System.out.println(inputString + " is a palindrome");

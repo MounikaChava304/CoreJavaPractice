@@ -16,6 +16,6 @@ public class Tester extends Employee {
      */
     @Override
     public BigDecimal calculateYearlyBonus() {
-        return (getSalary().multiply(new BigDecimal("0.05")));
+        return (getSalary().multiply(new BigDecimal("0.05")).multiply(new BigDecimal("12")));
     }
 }
