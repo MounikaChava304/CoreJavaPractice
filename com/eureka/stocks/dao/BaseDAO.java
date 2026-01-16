@@ -13,7 +13,7 @@ public class BaseDAO implements AutoCloseable{
     private static final String PASSWORD = "5LViU5pLkSjRHECec9NF4wRxxV";
 
     protected Connection connection;
-    
+
     public BaseDAO() {
         try {
             System.out.println("Before creating a database connection");
