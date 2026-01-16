@@ -18,17 +18,15 @@ public class Stock {
         System.out.println("Inside the static block in the stock class");
     }
 
-    private String tickerSymbol;
+    private String tickerSymbol; //Instance variable
     private String tickerName;
     private BigInteger marketCap;
     private int sectorID;
     private int subSectorID;
     private double currentRatio;
-
     //Default Constructor
     private Stock() {
     }
-
     /**
      * Parameterized Constructor that forces creating a stock with preset parameters
      *
@@ -44,6 +42,10 @@ public class Stock {
         this.sectorID = sectorID;
         this.subSectorID = subSectorID;
     }
+    public Stock(String tickerSymbol, String tickerName) {
+        this.tickerSymbol = tickerSymbol;
+        this.tickerName = tickerName;
+    }
 
     /**
      * Some documentation for this junk static method
@@ -57,23 +59,20 @@ public class Stock {
     }
 
     //Getter and Setter Methods
-
     public String getTickerSymbol() {
         return tickerSymbol;
     }
 
-//    public void setTickerSymbol(String tickerSymbol) {
-//        this.tickerSymbol = tickerSymbol; //this keyword refers to the current object
-//    }
-
+    //  public void setTickerSymbol(String tickerSymbol) {
+//      this.tickerSymbol = tickerSymbol; //this keyword refers to the current object
+//  }
     public String getTickerName() {
         return tickerName;
     }
 
-//    public void setTickerName(String tickerName) {
+    //    public void setTickerName(String tickerName) {
 //        this.tickerName = tickerName;
 //    }
-
     public BigInteger getMarketCap() {
         return marketCap;
     }
@@ -91,12 +90,29 @@ public class Stock {
 //        this.sectorID = sectorID;
 //    }
 
+    public int getSubSectorID() {
+        return subSectorID;
+    }
+
+    //    public void setSubSectorID(int subSectorID) {
+//        this.subSectorID = subSectorID;
+//    }
+    public double getCurrentRatio() {
+        return currentRatio;
+    }
+
+    public void setCurrentRatio(double currentRatio) {
+        this.currentRatio = currentRatio;
+    }
+
     @Override
     public String toString() {
         return "Stock{" +
                 "tickerSymbol='" + tickerSymbol + '\'' +
                 ", tickerName='" + tickerName + '\'' +
                 ", marketCap=" + marketCap +
+                ", sectorID=" + sectorID +
+                ", subSectorID= "+ subSectorID +
                 ", currentRatio=" + currentRatio +
                 '}';
     }
@@ -132,21 +148,6 @@ public class Stock {
         return Objects.hash(tickerSymbol, tickerName);
     }
 
-    public int getSubSectorID() {
-        return subSectorID;
-    }
-
-//    public void setSubSectorID(int subSectorID) {
-//        this.subSectorID = subSectorID;
-//    }
-
-    public double getCurrentRatio() {
-        return currentRatio;
-    }
-
-    public void setCurrentRatio(double currentRatio) {
-        this.currentRatio = currentRatio;
-    }
 
     /**
      * This Method prints all the details of the stock.
