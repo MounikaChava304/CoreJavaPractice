@@ -31,7 +31,7 @@ public class StockFundamentalsDAO extends BaseDAO {
             while (resultSet.next()) {
                 StockFundamentalsVO stockFundamentalsVO = new StockFundamentalsVO(resultSet.getString("ticker_symbol"));
                 stockFundamentalsVO.setSector_id(resultSet.getInt("sector_id"));
-                stockFundamentalsVO.setMarket_cap(resultSet.getFloat("market_cap"));
+                stockFundamentalsVO.setMarket_cap(resultSet.getLong("market_cap"));
                 stockFundamentalsVO.setCurrentRatio(resultSet.getFloat("current_ratio"));
 
                 stockFundamentalsVOList.add(stockFundamentalsVO);

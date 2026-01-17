@@ -5,7 +5,7 @@ import java.util.Objects;
 public class StockFundamentalsVO {
     private String ticker_symbol;
     private int sector_id;
-    private float market_cap;
+    private long market_cap;
     private float currentRatio;
 
     private StockFundamentalsVO() {
@@ -27,11 +27,11 @@ public class StockFundamentalsVO {
         this.sector_id = sector_id;
     }
 
-    public float getMarket_cap() {
+    public long getMarket_cap() {
         return market_cap;
     }
 
-    public void setMarket_cap(float market_cap) {
+    public void setMarket_cap(long market_cap) {
         this.market_cap = market_cap;
     }
 

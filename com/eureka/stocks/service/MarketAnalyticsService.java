@@ -6,7 +6,6 @@ import com.eureka.stocks.vo.SectorVO;
 import com.eureka.stocks.vo.StockFundamentalsVO;
 import com.eureka.stocks.vo.SubSectorVO;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class MarketAnalyticsService {
