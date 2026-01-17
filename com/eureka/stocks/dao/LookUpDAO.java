@@ -1,5 +1,6 @@
 package com.eureka.stocks.dao;
 
+import com.eureka.stocks.exception.StockException;
 import com.eureka.stocks.vo.SectorVO;
 import com.eureka.stocks.vo.SubSectorVO;
 
@@ -37,8 +38,7 @@ public class LookUpDAO extends BaseDAO {
             return sectorList;
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
         }
         return sectorList;
     }
@@ -68,5 +68,35 @@ public class LookUpDAO extends BaseDAO {
             e.printStackTrace();
         }
         return subSectorVO;
+    }
+
+    /***
+     * This is a method that returns all sub sectors of the economy
+     * @return List of subsectors
+     */
+    public List<SubSectorVO> getAllSubSectors() {
+        String subSectorsQuery = """
+                select
+                	sl.sector_id ,
+                	sl.subsector_id ,
+                	sl.subsector_name
+                from
+                	endeavour.subsector_lookup sl
+                """;
+        List<SubSectorVO> subSectorList = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(subSectorsQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                SubSectorVO subSectorVO = new SubSectorVO(resultSet.getInt("subsector_id"));
+                subSectorVO.setSubSectorName(resultSet.getString("subsector_name"));
+                subSectorVO.setSectorID(resultSet.getInt("sector_id"));
+                subSectorList.add(subSectorVO);
+            }
+            return subSectorList;
+        } catch (SQLException e) {
+            throw new StockException("Unable to retrieve subsector data from DB", e);
+        }
     }
 }

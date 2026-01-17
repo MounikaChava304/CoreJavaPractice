@@ -1,5 +1,6 @@
 package com.eureka.stocks.dao;
 
+import com.eureka.stocks.exception.StockException;
 import com.eureka.stocks.vo.StockFundamentalsVO;
 
 import java.sql.PreparedStatement;
@@ -31,13 +32,14 @@ public class StockFundamentalsDAO extends BaseDAO {
             while (resultSet.next()) {
                 StockFundamentalsVO stockFundamentalsVO = new StockFundamentalsVO(resultSet.getString("ticker_symbol"));
                 stockFundamentalsVO.setSector_id(resultSet.getInt("sector_id"));
-                stockFundamentalsVO.setMarket_cap(resultSet.getLong("market_cap"));
-                stockFundamentalsVO.setCurrentRatio(resultSet.getFloat("current_ratio"));
+                stockFundamentalsVO.setMarket_cap(resultSet.getBigDecimal("market_cap"));
+                stockFundamentalsVO.setCurrentRatio(resultSet.getDouble("current_ratio"));
 
                 stockFundamentalsVOList.add(stockFundamentalsVO);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //Wrapping the original exception in our custom exception
+            throw new StockException("Unable to retrieve Stock Fundamentals data from the DB", e);
         }
         return stockFundamentalsVOList;
 

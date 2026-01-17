@@ -1,12 +1,13 @@
 package com.eureka.stocks.vo;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
-public class StockFundamentalsVO {
+public class StockFundamentalsVO implements  Comparable<StockFundamentalsVO>{
     private String ticker_symbol;
     private int sector_id;
-    private long market_cap;
-    private float currentRatio;
+    private BigDecimal market_cap;
+    private double currentRatio;
 
     private StockFundamentalsVO() {
     }
@@ -27,19 +28,19 @@ public class StockFundamentalsVO {
         this.sector_id = sector_id;
     }
 
-    public long getMarket_cap() {
+    public BigDecimal getMarket_cap() {
         return market_cap;
     }
 
-    public void setMarket_cap(long market_cap) {
+    public void setMarket_cap(BigDecimal market_cap) {
         this.market_cap = market_cap;
     }
 
-    public float getCurrentRatio() {
+    public double getCurrentRatio() {
         return currentRatio;
     }
 
-    public void setCurrentRatio(float currentRatio) {
+    public void setCurrentRatio(double currentRatio) {
         this.currentRatio = currentRatio;
     }
 
@@ -60,5 +61,15 @@ public class StockFundamentalsVO {
         return "StockFundamentalsVO{" +
                 "ticker_symbol='" + ticker_symbol + '\'' +
                 '}';
+    }
+
+    /***
+     * Natural order is by ticker_symbol ascending
+     * @param o the object to be compared.
+     * @return
+     */
+    @Override
+    public int compareTo(StockFundamentalsVO o) {
+        return this.getTicker_symbol().compareTo(o.getTicker_symbol());
     }
 }

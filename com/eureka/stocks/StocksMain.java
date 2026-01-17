@@ -2,6 +2,7 @@ package com.eureka.stocks;
 
 import com.eureka.stocks.dao.LookUpDAO;
 import com.eureka.stocks.dao.StockFundamentalsDAO;
+import com.eureka.stocks.exception.StockException;
 import com.eureka.stocks.service.MarketAnalyticsService;
 import com.eureka.stocks.vo.SectorVO;
 import com.eureka.stocks.vo.StockFundamentalsVO;
@@ -29,12 +30,18 @@ public class StocksMain {
 
             //Get Stocks fundamentals details from the database
             List<StockFundamentalsVO> allStockFundamentals = marketAnalyticsService.getStockFundamentals();
-            System.out.println("Number of stocks returned from db is "+allStockFundamentals.size());
-            for(StockFundamentalsVO eachStock : allStockFundamentals){
-                System.out.println("Stock Symbol : "+eachStock.getTicker_symbol()+" , Sector ID : "+eachStock.getSector_id()+
-                        " , Market Cap : "+eachStock.getMarket_cap()+" , Current Ratio : "+eachStock.getCurrentRatio());
-            };
+            System.out.println("Number of stocks returned from db is " + allStockFundamentals.size());
+//            for (StockFundamentalsVO eachStock : allStockFundamentals) {
+//                System.out.println("Stock Symbol : " + eachStock.getTicker_symbol() + " , Sector ID : " + eachStock.getSector_id() +
+//                        " , Market Cap : " + eachStock.getMarket_cap() + " , Current Ratio : " + eachStock.getCurrentRatio());
+//            }
 
+            //Get all subsector information from the database
+            List<SubSectorVO> subSectorList = marketAnalyticsService.getAllSubSectors();
+            System.out.println("Number of subsectors returned from db is " + subSectorList.size());
+
+        } catch (StockException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

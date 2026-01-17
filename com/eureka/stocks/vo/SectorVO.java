@@ -5,7 +5,7 @@ import java.util.Objects;
 /***
  * This class is used to create instances/objects that each represent a Sector Record or a row from the sector_lookup table
  */
-public class SectorVO {
+public class SectorVO implements Comparable<SectorVO> {
     private int sectorID;
     private String sectorName;
 
@@ -46,5 +46,17 @@ public class SectorVO {
                 "sectorID=" + sectorID +
                 ", sectorName='" + sectorName + '\'' +
                 '}';
+
+    }
+
+    /***
+     * Natural order sorting by sector name ascending
+     * @param o the object to be compared.
+     * @return
+     */
+    @Override
+    public int compareTo(SectorVO o) {
+        return this.sectorName.compareTo(o.getSectorName());
+//        return o.getSectorName().compareTo(this.sectorName);
     }
 }
