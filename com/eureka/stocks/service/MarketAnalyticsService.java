@@ -8,6 +8,7 @@ import com.eureka.stocks.vo.SectorVO;
 import com.eureka.stocks.vo.StockFundamentalsVO;
 import com.eureka.stocks.vo.SubSectorVO;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -67,12 +68,26 @@ public class MarketAnalyticsService {
 //        allStockFundamentalsList.sort(new SFMarketCapAscComparator().reversed()); //Other order by MarketCap Descending
 
 //        Sort by Market Cap descending using anonymous inner class
-        allStockFundamentalsList.sort(new Comparator<StockFundamentalsVO>() {// Anonymous Inner Class Way
-            @Override
-            public int compare(StockFundamentalsVO o1, StockFundamentalsVO o2) {
-                return o1.getMarket_cap().compareTo(o2.getMarket_cap());
-            }
-        });
+//        allStockFundamentalsList.sort(new Comparator<StockFundamentalsVO>() {// Anonymous Inner Class Way
+//            @Override
+//            public int compare(StockFundamentalsVO o1, StockFundamentalsVO o2) {
+//                return o1.getMarket_cap().compareTo(o2.getMarket_cap());
+//            }
+//        });
+
+        //Same Comparator using Lambda Expression
+        allStockFundamentalsList.sort((o1,o2) -> o2.getMarket_cap().compareTo(o1.getMarket_cap()));
+
+        allStockFundamentalsList.sort(Comparator.comparing(stockFundamentalsVO -> stockFundamentalsVO.getMarket_cap())); //Using Lambda
+        allStockFundamentalsList.sort(Comparator.comparing(StockFundamentalsVO::getMarket_cap).reversed()); //Using Method Reference
+
+        StockFundamentalsVO snappleVO = new StockFundamentalsVO("SAAPL");
+        snappleVO.setMarket_cap(new BigDecimal("3436888195072"));
+        allStockFundamentalsList.add(snappleVO);
+
+        //Sort by MarketCap desc and then by ticker_symbol desc
+        allStockFundamentalsList.sort(Comparator.comparing(StockFundamentalsVO::getMarket_cap).reversed()
+                .thenComparing(Comparator.comparing(StockFundamentalsVO::getTicker_symbol).reversed()));
         return allStockFundamentalsList;
     }
 
@@ -81,6 +96,11 @@ public class MarketAnalyticsService {
         Collections.sort(allSubSectorsList);//Natural Order
 //        Collections.sort(allSubSectorsList, new SubSectorNameComparator()); //OtherOrder sort by subsector name ascending
         allSubSectorsList.sort(new SubSectorNameComparator()); //Other way of writing above line
+
+        //Sort by sector ID first and then SubSector Name - ( SQL Equivalent : order by sector_id, subSectorName desc)
+        allSubSectorsList.sort(Comparator.comparing(SubSectorVO::getSectorID)
+                .thenComparing(Comparator.comparing(SubSectorVO::getSubSectorName).reversed())
+        );
         return allSubSectorsList;
     }
 }

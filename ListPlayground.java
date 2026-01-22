@@ -77,6 +77,12 @@ public class ListPlayground {
         for (Stock eachStock : stocksList) {
             System.out.println(eachStock);
         }
+        System.out.println("--------------------------------");
+        stocksList.forEach(stock -> { //Lambda Expression
+            System.out.println("Print from forEach using Functional Interface "+stock);
+        });
+        System.out.println("--------------------------------");
+        stocksList.forEach(System.out::println); //Using Method Reference
 
         //ALERT ---- DO NOT DO THIS
         List<Object> someJunkList = new ArrayList();
