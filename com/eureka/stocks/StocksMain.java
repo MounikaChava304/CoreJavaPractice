@@ -2,22 +2,27 @@ package com.eureka.stocks;
 
 import com.eureka.stocks.dao.LookUpDAO;
 import com.eureka.stocks.dao.StockFundamentalsDAO;
+import com.eureka.stocks.dao.StockPriceHistoryDAO;
 import com.eureka.stocks.exception.StockException;
 import com.eureka.stocks.service.MarketAnalyticsService;
 import com.eureka.stocks.vo.SectorVO;
 import com.eureka.stocks.vo.StockFundamentalsVO;
+import com.eureka.stocks.vo.StocksPriceHistoryVO;
 import com.eureka.stocks.vo.SubSectorVO;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class StocksMain {
     public static void main(String[] args) {
         try (LookUpDAO lookUpDAO = new LookUpDAO();
-             StockFundamentalsDAO stockFundamentalsDAO = new StockFundamentalsDAO()) { //try-with resources construct
+             StockFundamentalsDAO stockFundamentalsDAO = new StockFundamentalsDAO();
+             StockPriceHistoryDAO stockPriceHistoryDAO = new StockPriceHistoryDAO()) { //try-with resources construct
 
             //Injecting an instance of lookUpDAO to the constructor of MarketAnalyticsService,
             // as it is a dependency that is needed for the MarketAnalyticsService instance to function.
-            MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDAO, stockFundamentalsDAO);
+            MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDAO, stockFundamentalsDAO, stockPriceHistoryDAO);
 
             //Get all sector information from the database
             List<SectorVO> allSectorsList = marketAnalyticsService.getAllSectors();
@@ -39,6 +44,11 @@ public class StocksMain {
             //Get all subsector information from the database
             List<SubSectorVO> subSectorList = marketAnalyticsService.getAllSubSectors();
             System.out.println("Number of subsectors returned from db is " + subSectorList.size());
+
+            //Get PriceHistory for AMD between 2 dates fromDate and toDate
+            LocalDate fromDate = LocalDate.parse("2025-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            List<StocksPriceHistoryVO> priceHistoryVOList = marketAnalyticsService.getPriceHistoryForSingleStock("AMD", fromDate, fromDate.plusMonths(1));
+            System.out.println(priceHistoryVOList);
 
         } catch (StockException e) {
             e.printStackTrace();
