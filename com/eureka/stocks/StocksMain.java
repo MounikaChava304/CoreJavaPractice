@@ -50,6 +50,15 @@ public class StocksMain {
             List<StocksPriceHistoryVO> priceHistoryVOList = marketAnalyticsService.getPriceHistoryForSingleStock("AMD", fromDate, fromDate.plusMonths(1));
             System.out.println(priceHistoryVOList);
 
+            //Deal with HeathCare stocks
+            marketAnalyticsService.dealingWithHealthCareStocks();
+
+            //per Sector method
+            marketAnalyticsService.splitStocksBySector();
+            marketAnalyticsService.identifyBlueChipStocks();
+            marketAnalyticsService.identifySmallCapStocks();
+            marketAnalyticsService.subSectorAvgMktCap();
+
         } catch (StockException e) {
             e.printStackTrace();
         } catch (Exception e) {

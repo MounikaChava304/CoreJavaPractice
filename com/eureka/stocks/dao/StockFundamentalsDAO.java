@@ -21,7 +21,8 @@ public class StockFundamentalsDAO extends BaseDAO {
                 	sf.ticker_symbol ,
                 	sf.sector_id ,
                 	sf.market_cap ,
-                	sf.current_ratio
+                	sf.current_ratio,
+                	sf.subSector_id
                 from
                 	endeavour.stock_fundamentals sf
                 """;
@@ -34,6 +35,7 @@ public class StockFundamentalsDAO extends BaseDAO {
                 stockFundamentalsVO.setSector_id(resultSet.getInt("sector_id"));
                 stockFundamentalsVO.setMarket_cap(resultSet.getBigDecimal("market_cap"));
                 stockFundamentalsVO.setCurrentRatio(resultSet.getDouble("current_ratio"));
+                stockFundamentalsVO.setSubSector_id(resultSet.getInt("subSector_id"));
 
                 stockFundamentalsVOList.add(stockFundamentalsVO);
             }

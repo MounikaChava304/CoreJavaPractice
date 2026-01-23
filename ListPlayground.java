@@ -1,7 +1,6 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ListPlayground {
     public static void main(String[] args) {
@@ -108,5 +107,22 @@ public class ListPlayground {
         }
         System.out.println("Total of intList values is " + total);
         System.out.println("Does intList contains 63 ? " + intList.contains(63));
+
+        List<Integer> integerList = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        //My First Stream
+        List<String> streamStringList = integerList.stream()
+                .filter(n -> n % 2 == 0) //Filter is and Intermediate Function, like WHERE in SQL
+                .sorted(Comparator.comparing(Integer::intValue).reversed()) //Sorted is also an Intermediate Function, like ORDERBY in SQL
+                .map((j) -> "Test" + j) //Transformation Function that change the stream type
+                .limit(2) //Same as limit in SQL
+                .collect(Collectors.toList()); //Terminal Function that collects the Stream to a List. Collectors is a util class.
+        System.out.println(streamStringList);
+        System.out.println("Original int List is : "+integerList);
+
+        //Basic example of using reduce terminal function
+        Optional<Integer> intSumOptional = integerList.stream()
+                .reduce((a, b) -> a + b);
+//        intSumOptional.ifPresent(x -> System.out.println(x)); //Using Lambda Expression
+        intSumOptional.ifPresent(System.out::println);
     }
 }
