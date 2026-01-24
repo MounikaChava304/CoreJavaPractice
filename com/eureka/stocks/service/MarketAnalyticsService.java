@@ -13,6 +13,8 @@ import com.eureka.stocks.vo.SubSectorVO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -228,7 +230,7 @@ public class MarketAnalyticsService {
                 .reduce(BigDecimal::add);
         smallCapTotalMktCapOptional.ifPresent(x -> System.out.println("Total Market Cap of all small Cap Stocks is : "+x));
     }
-//    Get the average market cap for each subsector of the economy. Show subsectorName along with its avergae Market Cap
+//    Get the average market cap for each subsector of the economy. Show subsectorName along with its average Market Cap
     public void subSectorAvgMktCap(){
         List<StockFundamentalsVO> allStockFundamentalsList = stockFundamentalsDAO.getStockFundamentals();
         List<SubSectorVO> allSubSectorsList = lookUpDAO.getAllSubSectors();
@@ -274,18 +276,132 @@ public class MarketAnalyticsService {
         Map<Integer, List<StockFundamentalsVO>> stocksPerSectorList = allStockFundamentalsList.stream()
                 .collect(Collectors.groupingBy(StockFundamentalsVO::getSector_id));
 
-        Map<String, Integer> finalOutputMap = new HashMap<>();
+        Map<String, Integer> finalOutputMap = new TreeMap<>();
 
 //        For Each sector of the economy, count the number of stocks
-        stocksPerSectorList.forEach((sectorName, stocksList) -> {
+        stocksPerSectorList.forEach((sectorID, stocksList) -> {
             int stocksCount = stocksList.stream()
                     .map(StockFundamentalsVO::getTicker_symbol)
                     .collect(Collectors.toList()).size();
-            finalOutputMap.put(sectorNameMapByID.get(sectorName), stocksCount);
+            finalOutputMap.put(sectorNameMapByID.get(sectorID), stocksCount);
         });
        finalOutputMap.forEach((sector, count) -> {
            System.out.println(sector+" : "+count);
        });
     }
+//    Other way of Assignment
+
+    public void getSectorStocksCountOtherWay(){
+        List<StockFundamentalsVO> allStockFundamentalsList = stockFundamentalsDAO.getStockFundamentals();
+        List<SectorVO> allSectorsList = lookUpDAO.getAllSectors();
+
+        Map<Integer, String> sectorNameByIDMap = allSectorsList.stream()
+                .collect(Collectors.toMap(
+                        SectorVO::getSectorID,
+                        SectorVO::getSectorName
+                ));
+        Map<String, Integer> finalOutputMap = new TreeMap<>();
+
+        //Using compute if absent
+        allStockFundamentalsList
+                .forEach(stockFundamentalsVO -> {
+                    int count = finalOutputMap.computeIfAbsent(sectorNameByIDMap.get(stockFundamentalsVO.getSector_id()), (key) -> 0) + 1;
+                    finalOutputMap.put(sectorNameByIDMap.get(stockFundamentalsVO.getSector_id()),count);
+                });
+    }
+
+    /***
+     * For each year, Calculate the lowest close price for a given stock
+     * @param tickerSymbol
+     * @param fromDate
+     * @param toDate
+     */
+    public void getLowestPriceForGivenStock(String tickerSymbol, LocalDate fromDate, LocalDate toDate){
+        List<StocksPriceHistoryVO> priceHistoryList = stockPriceHistoryDAO.getPriceHistoryForStock(tickerSymbol, fromDate, toDate);
+
+        Map<Integer, List<StocksPriceHistoryVO>> priceHistoryListByYearMap = priceHistoryList.stream()
+                .collect(Collectors.groupingBy(stocksPriceHistoryVO -> stocksPriceHistoryVO.getTradingDate().getYear()));
+
+        Map<Integer, StocksPriceHistoryVO> finalOutputMap = new TreeMap<>();
+
+        priceHistoryListByYearMap.forEach((year, stockList) -> {
+            Optional<StocksPriceHistoryVO> lowestCPOptional = stockList.stream()
+                    .min(Comparator.comparing(StocksPriceHistoryVO::getClosePrice)); //Instead of using intermediate and terminal function like below, this is a terminal function that does the same
+//                    .sorted(Comparator.comparing(StocksPriceHistoryVO::getClosePrice))
+//                    .findFirst();
+
+            lowestCPOptional.ifPresent(lowestCP -> finalOutputMap.put(year, lowestCP));
+        });
+        System.out.println(finalOutputMap);
+    }
+
+    public void streamsRecap(){
+
+        List<StockFundamentalsVO> allStockFundamentalsList = stockFundamentalsDAO.getStockFundamentals();
+        List<SectorVO> allSectorsList = lookUpDAO.getAllSectors();
+
+        //Generating a sub List from given List using filter
+        List<StockFundamentalsVO> healthCareList = allStockFundamentalsList.stream()
+                .filter(StockFundamentalsVO -> StockFundamentalsVO.getSector_id() == 34)
+                .collect(Collectors.toList());
+
+        //Sort HealthCare Stocks by current ratio desc -- also handle nulls
+        List<StockFundamentalsVO> anotherHealthCareList = allStockFundamentalsList.stream()
+                .filter(stockFundamentalsVO -> stockFundamentalsVO.getSector_id() == 34)
+                .sorted(Comparator.comparing(StockFundamentalsVO::getCurrentRatio, Comparator.nullsFirst(BigDecimal::compareTo)).reversed()) //Use Comparator.nullsFirst(datatype::compareTo) when there could be null values
+                .collect(Collectors.toList());
+
+//        Find to 5 HealthCare Stocks by current ratio desc
+        List<String> top5HealthCareTickers = allStockFundamentalsList.stream()
+                .filter(stockFundamentalsVO -> stockFundamentalsVO.getSector_id() == 34)
+                .sorted(Comparator.comparing(StockFundamentalsVO::getCurrentRatio, Comparator.nullsFirst(BigDecimal::compareTo)).reversed())
+                .limit(5) //Like SQL Limit
+                .map(StockFundamentalsVO::getTicker_symbol)// Transform the stream from stream<StockFundamentalsVO> to stream<Strings>
+                .collect(Collectors.toList());
+        System.out.println(top5HealthCareTickers);
+
+//        Convert a 1-1 List to a Map
+        Map<Integer, String> sectorNameByIDMap = allSectorsList.stream()
+                .collect(Collectors.toMap(
+                        SectorVO::getSectorID,
+                        SectorVO::getSectorName
+                ));
+//        Convert a 1-many List into a Map
+        SectorVO mafiaSector = new SectorVO(45);
+        mafiaSector.setSectorName("Mafia");
+        allSectorsList.add(mafiaSector);
+
+        SectorVO junkSector = new SectorVO(45);
+        junkSector.setSectorName("SomeJunk");
+        allSectorsList.add(junkSector);
+
+        Map<Integer, String> anotherSectorNameByIDMap = allSectorsList.stream()
+                .collect(Collectors.toMap(
+                        SectorVO::getSectorID,
+                        SectorVO::getSectorName,
+                        (x, y) -> x.concat(y) //Binary Operator Merge Function that resolves the values that go into the Map Entry
+                ));
+
+        //    Get a single String with all sector Names comma separated
+        String allSectorsNamesString = allSectorsList.stream()
+                .map(SectorVO::getSectorName)
+                .sorted()
+                .collect(Collectors.joining(" , "));
+
+        //Calculate totalMarketCap for HealthCare Stocks
+        Optional<BigDecimal> healthCareTotalOptional = healthCareList.stream()
+                .map(StockFundamentalsVO::getMarket_cap)
+//                .reduce((a,b)->a.add(b)) //Using Lambda Expression
+                .reduce(BigDecimal::add);//Method Reference
+        healthCareTotalOptional.ifPresent(System.out::println);
+
+        //Split all Stock Price History by Month for AMD
+        LocalDate fromDate = LocalDate.parse("2024-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<StocksPriceHistoryVO> amdPriceHistoryList = stockPriceHistoryDAO.getPriceHistoryForStock("AMD", fromDate, fromDate.plusYears(1));
+        Map<Month, List<StocksPriceHistoryVO>> priceHistoryByMonthMap = new TreeMap(amdPriceHistoryList.stream()
+                .collect(Collectors.groupingBy(stocksPriceHistoryVO -> stocksPriceHistoryVO.getTradingDate().getMonth())));
+    }
+
 }
 

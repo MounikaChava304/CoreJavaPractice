@@ -55,10 +55,20 @@ public class StocksMain {
 
             //per Sector method
             marketAnalyticsService.splitStocksBySector();
+
             marketAnalyticsService.identifyBlueChipStocks();
+
             marketAnalyticsService.identifySmallCapStocks();
+
             marketAnalyticsService.subSectorAvgMktCap();
+//            Get count of stocks by sector
             marketAnalyticsService.eachSectorStocksCount();
+            marketAnalyticsService.getSectorStocksCountOtherWay();
+//            For each year, Calculate the lowest close price for a given stock
+            LocalDate anotherFromDate = LocalDate.parse("2018-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            marketAnalyticsService.getLowestPriceForGivenStock("INTC",anotherFromDate,anotherFromDate.plusYears(7));
+
+            marketAnalyticsService.streamsRecap();
 
         } catch (StockException e) {
             e.printStackTrace();
