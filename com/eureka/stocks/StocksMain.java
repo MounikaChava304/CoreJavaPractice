@@ -58,6 +58,7 @@ public class StocksMain {
             marketAnalyticsService.identifyBlueChipStocks();
             marketAnalyticsService.identifySmallCapStocks();
             marketAnalyticsService.subSectorAvgMktCap();
+            marketAnalyticsService.eachSectorStocksCount();
 
         } catch (StockException e) {
             e.printStackTrace();

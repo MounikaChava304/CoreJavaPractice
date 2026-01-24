@@ -256,5 +256,36 @@ public class MarketAnalyticsService {
         });
         System.out.println(finalOutputMap);
     }
+
+    /***
+     * This method gives the number of stocks for each sector. Assignment Day 11
+     */
+    public void eachSectorStocksCount(){
+        List<StockFundamentalsVO> allStockFundamentalsList = stockFundamentalsDAO.getStockFundamentals();
+        List<SectorVO> allSectorsList = lookUpDAO.getAllSectors();
+
+        //Map for unique sector with sector_id as key and sector_name as value
+        Map<Integer, String> sectorNameMapByID = allSectorsList.stream()
+                .collect(Collectors.toMap(
+                        SectorVO::getSectorID,
+                        SectorVO::getSectorName
+                ));
+//        Map which contains stocks per sector
+        Map<Integer, List<StockFundamentalsVO>> stocksPerSectorList = allStockFundamentalsList.stream()
+                .collect(Collectors.groupingBy(StockFundamentalsVO::getSector_id));
+
+        Map<String, Integer> finalOutputMap = new HashMap<>();
+
+//        For Each sector of the economy, count the number of stocks
+        stocksPerSectorList.forEach((sectorName, stocksList) -> {
+            int stocksCount = stocksList.stream()
+                    .map(StockFundamentalsVO::getTicker_symbol)
+                    .collect(Collectors.toList()).size();
+            finalOutputMap.put(sectorNameMapByID.get(sectorName), stocksCount);
+        });
+       finalOutputMap.forEach((sector, count) -> {
+           System.out.println(sector+" : "+count);
+       });
+    }
 }
 
