@@ -16,10 +16,10 @@ public class BaseDAO implements AutoCloseable {
 
     public BaseDAO() {
         try {
-            if (connection == null || connection.isClosed()) {
+//            if (connection == null || connection.isClosed()) {
                 System.out.println("Before creating a database connection");
                 this.connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            }
+//            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -32,10 +32,10 @@ public class BaseDAO implements AutoCloseable {
      */
     @Override
     public void close() throws Exception {
-        if (connection != null && !connection.isClosed()) {
+//        if (connection != null && !connection.isClosed()) {
             System.out.println("Before closing the db Connection");
             this.connection.close();
-        }
+//        }
     }
 }
 

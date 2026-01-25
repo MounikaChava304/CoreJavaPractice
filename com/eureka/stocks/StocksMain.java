@@ -69,6 +69,9 @@ public class StocksMain {
             marketAnalyticsService.getLowestPriceForGivenStock("INTC",anotherFromDate,anotherFromDate.plusYears(7));
 
             marketAnalyticsService.streamsRecap();
+            //Performance requirement
+            LocalDate performanceFromDate = LocalDate.parse("2022-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            marketAnalyticsService.calculateStockPerformanceByState(performanceFromDate, performanceFromDate.plusYears(3));
 
         } catch (StockException e) {
             e.printStackTrace();

@@ -5,13 +5,12 @@ import com.eureka.stocks.dao.StockFundamentalsDAO;
 import com.eureka.stocks.dao.StockPriceHistoryDAO;
 import com.eureka.stocks.sorting.SFMarketCapAscComparator;
 import com.eureka.stocks.sorting.SubSectorNameComparator;
-import com.eureka.stocks.vo.SectorVO;
-import com.eureka.stocks.vo.StockFundamentalsVO;
-import com.eureka.stocks.vo.StocksPriceHistoryVO;
-import com.eureka.stocks.vo.SubSectorVO;
+import com.eureka.stocks.vo.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -403,5 +402,86 @@ public class MarketAnalyticsService {
                 .collect(Collectors.groupingBy(stocksPriceHistoryVO -> stocksPriceHistoryVO.getTradingDate().getMonth())));
     }
 
+    /***
+     * --  During the period of 2022 to 2024, identify the top performing stock for each state in each year and its performance
+     * --  Best performing stock is % of growth between Closing Price EOY and Opening Price SOY
+     */
+    public void calculateStockPerformanceByState(LocalDate fromDate, LocalDate toDate){
+        long startTime =System.nanoTime();
+        Instant start = Instant.now();
+        List<StocksPriceHistoryVO> priceHistoryList = stockPriceHistoryDAO.getStockPriceHistoryAllStocks(fromDate, toDate);
+        priceHistoryList.sort(Comparator.comparing(StocksPriceHistoryVO::getTickerSymbol)
+                .thenComparing(Comparator.comparing(StocksPriceHistoryVO::getTradingDate).reversed()));
+        //Group the list by trading year
+        Map<Integer, List<StocksPriceHistoryVO>> priceHistoryListByYearMap = priceHistoryList.stream()
+                .collect(Collectors.groupingBy(stocksPriceHistoryVO ->
+                        stocksPriceHistoryVO.getTradingDate().getYear()));
+
+        //The key of our map is a custom object that we created
+        Map<TickerByYearVO,List<StocksPriceHistoryVO>> priceHistoryListByTckYrMap=new HashMap<>();
+
+        //For every year, get the Price History of that year, group by Ticker Symbol, and then put it into the priceHistoryListByTckYrMap
+        priceHistoryListByYearMap.forEach((year,phList)->{
+            // This map contains price history for a given Ticker symbol for a given year
+            Map<String, List<StocksPriceHistoryVO>> phListByTickerMap = phList.stream()
+                    .collect(Collectors.groupingBy(StocksPriceHistoryVO::getTickerSymbol));
+
+            phListByTickerMap.forEach((ticker,phTickerList)->{
+                TickerByYearVO tickerByYearVO= new TickerByYearVO(year, ticker);
+                priceHistoryListByTckYrMap.put(tickerByYearVO,phTickerList);
+            });
+
+        });
+        List<StockPerformanceVO> performanceList = new ArrayList<>();
+        //Map<newVo, List<PriceHistory>-> get list->Identify pho
+        //with lowest date and highest date and get prices from them
+        //and into a  performanceVo object
+        priceHistoryListByTckYrMap.forEach(((tickerByYearVO, phByYearTkrList)->
+        {
+            //Optional contains a StockPrice History object for the max Trading date for that year and ticker
+            Optional<StocksPriceHistoryVO> maxTradingDateOptional = phByYearTkrList.stream()
+                    .max(Comparator.comparing(StocksPriceHistoryVO::getTradingDate));
+            //Optional contains a StockPrice History object for the min Trading date for that year and ticker
+            Optional<StocksPriceHistoryVO> minTradingDateOptional = phByYearTkrList.stream()
+                    .min(Comparator.comparing(StocksPriceHistoryVO::getTradingDate));
+            if(maxTradingDateOptional.isPresent() && minTradingDateOptional.isPresent()){
+                StockPerformanceVO stockPerformanceVO= new StockPerformanceVO();
+                stockPerformanceVO.setYear(tickerByYearVO.getYear());
+                stockPerformanceVO.setTickerSymbol(tickerByYearVO.getTickerSymbol());
+                stockPerformanceVO.setState(maxTradingDateOptional.get().getState());
+
+                //Performance calculation 100*(CPYE-OPSOY)/OPSOY
+                BigDecimal performance =new BigDecimal(100).multiply((maxTradingDateOptional.get().getClosePrice()
+                                .subtract(minTradingDateOptional.get().getOpenPrice())))
+                        .divide(minTradingDateOptional.get().getOpenPrice(),2,RoundingMode.HALF_UP);
+                stockPerformanceVO.setPerformance(performance);
+                performanceList.add(stockPerformanceVO);
+            }
+            Collections.sort(performanceList);
+        }));
+        List<StockPerformanceVO> finalOutputList = new ArrayList<>();
+        //Split the performance List by year
+        Map<Integer, List<StockPerformanceVO>> performanceByYearMap = performanceList.stream()
+                .collect(Collectors.groupingBy(StockPerformanceVO::getYear));
+        //performanceByYearMap contains List of performance metrics for a  given year
+        performanceByYearMap.forEach((year, perfList)->{
+            //PerfByStateMap which is temporary that contains List of performance Metrics for each year and state
+            Map<String, List<StockPerformanceVO>> perfByStateMap = perfList.stream()
+                    .collect(Collectors.groupingBy(StockPerformanceVO::getState));
+
+            perfByStateMap.forEach((stateCode, perfStateList)->
+            {
+                Optional<StockPerformanceVO> byStateTopPerformingStockOptional = perfStateList.stream()
+                        .max(Comparator.comparing(StockPerformanceVO::getPerformance));
+                byStateTopPerformingStockOptional.ifPresent(stockPerformanceVO -> finalOutputList.add(stockPerformanceVO));
+            });
+        });
+        Collections.sort(finalOutputList);
+        long endTime=System.nanoTime();
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start,finish).toMillis();
+        System.out.println("\n Time take to complete \n"+timeElapsed);
+        System.out.println(finalOutputList);
+    }
 }
 
